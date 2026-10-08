@@ -1,0 +1,5 @@
+-keep class com.nazatric.thegadget.nativecore.** { *; }
+-keepclasseswithmembernames class * { native <methods>; }
+-keep class androidx.media3.** { *; }
+-keep class androidx.room.** { *; }
+-dontwarn javax.annotation.**

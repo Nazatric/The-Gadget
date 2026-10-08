@@ -1,0 +1,29 @@
+name: android
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Reject the removed watermark
+        run: |
+          if grep -RIn --exclude-dir=build -e 'Hengrphcs' -e 'hengrphcs' app/src; then
+            echo "removed watermark must not appear in source"
+            exit 1
+          fi
+      - name: Test and assemble
+        run: chmod +x gradlew && ./gradlew test assembleRelease --stacktrace
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'push'
+        with:
+          name: gadget-release
+          path: app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
